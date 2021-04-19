@@ -1,20 +1,22 @@
 <template>
 	<div class="overflow-auto">
-		<div ref="Header" class="Header relative ibt whitespace-nowrap w-24 h-full overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
-			<div v-for="(patch, pid) in patchesParsed" class="relative w-full h-14 leading-14 text-center bg-gray-600 cursor-pointer select-none">
+		<div ref="Header" class="Header relative w-24 h-full overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
+			<div v-for="(patch, pid) in patchesParsed" class="relative w-full h-14 leading-14 text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125">
 				{{pid}}
 			</div>
 		</div>
-		<table ref="Table" border="1" class="Table relative ibt whitespace-nowrap h-full overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
-			<tr v-for="patch in patchesParsed" class="">
-				<td v-for="item of patch"
-					class="Cell h-14 px-4 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer select-none"
-					:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
-				>
-					{{item.name}}
-				</td>
-			</tr>
-		</table>
+		<div ref="Table" border="1" class="Table relative h-full overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
+			<table>
+				<tr v-for="patch in patchesParsed" class="">
+					<td v-for="item of patch"
+						class="h-14 px-4 py-0 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer select-none"
+						:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
+					>
+						{{item.name}}
+					</td>
+				</tr>
+			</table>
+		</div>
 	</div>
 </template>
 
@@ -134,10 +136,17 @@
 </script>
 
 <style scoped>
+.Header {
+	float: left;
+	height: calc(100% - 7px);
+}
 .Table {
-	width: calc(100% - 6rem);
+	width: auto;
 }
 
+.Header {
+	scrollbar-width: none;
+}
 .Header::-webkit-scrollbar {
 	width: 0px;
 }

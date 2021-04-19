@@ -3,8 +3,9 @@ import pluginVue from '@vitejs/plugin-vue';
 
 export default defineConfig({
 	plugins: [pluginVue()],
+	base: './',
 	build: {
 		emptyOutDir: true,
-		outDir: 'dist'
+		outDir: 'dist',
 	}
 });

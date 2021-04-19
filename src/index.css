@@ -11,21 +11,18 @@ html, body, #app {
 	padding: 0px;
 }
 
+* {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(119, 119, 119, 0.7);
+}
 ::-webkit-scrollbar {
 	width: 7px;
 	height: 7px;
 }
-
-/* ::-webkit-scrollbar-track {
-	border-radius: 10px;
-	width: 10px;
-} */
-
 ::-webkit-scrollbar-thumb {
-	border-radius: 5px;
+	border-radius: 7px;
 	background: rgba(119, 119, 119, 0.7);
 }
-
 ::-webkit-scrollbar-thumb:hover {
 	background: rgba(204, 204, 204, 0.7);
 }
@@ -40,6 +37,6 @@ html, body, #app {
 
 /* -------------- */
 #app {
-	background: #35363a;
+	background: #353637;
 	color: snow;
 }
