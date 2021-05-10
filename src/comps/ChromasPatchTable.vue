@@ -69,7 +69,8 @@
 				'#FF2C25#FF2C25': 'Amber',
 
 				'#88FF00#00B170': 'Jadeclaw',
-				'#B2D1E4#3CABFF': 'Hunter'
+				'#B2D1E4#3CABFF': 'Hunter',
+				'#0C0C0F#B2D1E4': 'Night',
 			};
 
 			const colorsWhite = [
@@ -117,7 +118,8 @@
 							const championEN = championsEN.value[cid];
 							const skinEN = championEN.skins[sid];
 
-							if(!skinCN.chromas) { console.log(cid, sid, skinCN); }
+							// if(!skinCN.chromas) { console.log(cid, sid, skinCN); }
+
 							const result = {
 								csid: item.csid,
 								cid,

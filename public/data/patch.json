@@ -124,5 +124,69 @@
 			"csid": "777001",
 			"type": 1
 		}
+	],
+	"10.15": [
+		{
+			"csid": "876000",
+			"type": 2
+		},
+		{
+			"csid": "412017",
+			"type": 1,
+			"isLegendary": true
+		},
+		{
+			"csid": "017027",
+			"type": 1,
+			"isPrestige": true
+		},
+		{
+			"csid": "876001",
+			"type": 1
+		},
+		{
+			"csid": "017025",
+			"type": 1
+		},
+		{
+			"csid": "067014",
+			"type": 1
+		},
+		{
+			"csid": "157036",
+			"type": 1
+		}
+	],
+	"10.14": [
+		{
+			"csid": "876000",
+			"type": 2
+		},
+		{
+			"csid": "412017",
+			"type": 1,
+			"isLegendary": true
+		},
+		{
+			"csid": "017027",
+			"type": 1,
+			"isPrestige": true
+		},
+		{
+			"csid": "876001",
+			"type": 1
+		},
+		{
+			"csid": "017025",
+			"type": 1
+		},
+		{
+			"csid": "067014",
+			"type": 1
+		},
+		{
+			"csid": "157036",
+			"type": 1
+		}
 	]
 }

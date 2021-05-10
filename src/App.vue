@@ -2,6 +2,7 @@
 	<div class="mb-4">
 		<div class="TabButton inline-block box-border h-8 w-32 mx-4 text-center leading-8 cursor-pointer" :class="{ _now: compNow == 'PatchTable' }" @click="compNowPrepare = 'PatchTable'">主美更新表</div>
 		<div class="TabButton inline-block box-border h-8 w-32 mx-4 text-center leading-8 cursor-pointer" :class="{ _now: compNow == 'ChromasPatchTable' }" @click="compNowPrepare = 'ChromasPatchTable'">炫彩更新表</div>
+		<div class="TabButton inline-block box-border h-8 w-32 mx-4 text-center leading-8 cursor-pointer" :class="{ _now: compNow == 'Find' }" @click="compNowPrepare = 'Find'">查找</div>
 	</div>
 	<component :is="compNow" class="CompNow" :data="data" />
 </template>

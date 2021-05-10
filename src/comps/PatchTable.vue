@@ -86,6 +86,10 @@
 							name: `${skinEN.name}\n${skinCN.name}`,
 						};
 
+						if(sid == 0) {
+							result.name = `${championEN.name}\n${championCN.name}`;
+						}
+
 						parseColor(result);
 
 						return result;
