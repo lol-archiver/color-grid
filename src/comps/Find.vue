@@ -1,7 +1,8 @@
 <template>
-	<div class="overflow-hidden whitespace-nowrap w-full">
-		<textarea v-model="raw" class="h-1/2 w-1/2 text-gray-700" /><br />
-		<textarea v-model="result" class="h-1/2 w-1/2 text-gray-700" />
+	<div class="overflow-hidden whitespace-nowrap w-full text-center">
+		<textarea ref="ra" v-model="raw" class="h-1/3 w-1/3 bg-transparent text-white resize-none outline-none border-b border-white" @mouseover="mora" />
+		<br />
+		<textarea ref="re" v-model="result" class="h-1/3 w-1/3 bg-transparent text-white resize-none outline-none" readonly="readonly" @mouseover="more" />
 	</div>
 </template>
 
@@ -22,7 +23,9 @@
 			const conds = computed(() => raw.value.split('\n'));
 
 			const result = computed(() => {
-				const names = [];
+				if(raw.value.trim() == '') { return ''; }
+
+				const names = new Set();
 
 				Object.values(championsCN.value).forEach(({ id: cid, skins }) => {
 					Object.values(skins).forEach(skin => {
@@ -32,13 +35,13 @@
 
 						for(const cond of conds.value) {
 							if(name.includes(cond)) {
-								names.push(`${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)} ${name}`);
+								names.add(`${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)} ${name}`);
 							}
 						}
 					});
 				});
 
-				return names.join('\n');
+				return [...names].join('\n');
 			});
 
 			return {
@@ -46,6 +49,10 @@
 				result,
 			};
 		},
+		methods: {
+			more() { this.$refs.re.focus(); this.$refs.re.select(); },
+			mora() { this.$refs.ra.focus(); this.$refs.ra.select(); },
+		}
 	};
 </script>
 

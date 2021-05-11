@@ -5,7 +5,7 @@ export default defineConfig({
 	plugins: [pluginVue()],
 	base: './',
 	build: {
-		emptyOutDir: true,
-		outDir: 'dist',
+		emptyOutDir: false,
+		outDir: '../lol-colorgrid-prod',
 	}
 });

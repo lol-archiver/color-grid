@@ -90,14 +90,27 @@
 				let back = '#ffffff';
 				let font = '#000000';
 
-				if(item.isLegendary) { back = '#FFE699'; }
+				// 英雄
+				if(item.sid == 0) { back = '#C6E0B4'; }
+				// 终极
+				else if(item.isUltimate) { back = '#FFE699'; }
+				// 至臻
 				else if(item.isPrestige) { back = '#F8CBAD'; }
-				else if(item.isSolo) { back = '#BDD7EE'; }
-				else if(item.sid == 0) { back = '#C6E0B4'; }
+				// 神秘
+				else if(item.isMythic) { back = '#AE88FF'; }
+				// 传说
+				else if(item.isLegendary) { back = '#FF8383'; }
+				// 破旧
+				else if(item.isTimeworn) { back = '#00C8FF'; }
+				// 史诗限定
+				else if(item.isLimit) { back = '#BDD7EE'; }
+				// 史诗
 				else { back = '#DAC2EC'; }
 
+				// 重做
 				if(item.isUpdate) { font = '#C00000'; }
-				else if(item.isLimit) { font = '#548235'; }
+				// 非史诗的限定
+				else if(back != '#BDD7EE' && item.isLimit) { font = '#396c9a'; }
 
 
 				item.colors.back = back;
@@ -118,7 +131,7 @@
 							const championEN = championsEN.value[cid];
 							const skinEN = championEN.skins[sid];
 
-							// if(!skinCN.chromas) { console.log(cid, sid, skinCN); }
+							const tags = item.tags ? item.tags.split('|') : [];
 
 							const result = {
 								csid: item.csid,
@@ -126,12 +139,14 @@
 								sid,
 								type: item.type,
 
-								isLegendary: Boolean(item.isLegendary),
-								isPrestige: Boolean(item.isPrestige),
-								isSolo: Boolean(item.isSolo),
+								isUltimate: Boolean(tags.includes('ut')),
+								isPrestige: Boolean(tags.includes('pt')),
+								isMythic: Boolean(tags.includes('my')),
+								isLegendary: Boolean(tags.includes('lg')),
+								isTimeworn: Boolean(tags.includes('tw')),
 
-								isUpdate: Boolean(item.isUpdate),
-								isLimit: Boolean(item.isLimit),
+								isLimit: Boolean(tags.includes('lm')),
+								isUpdate: Boolean(tags.includes('up')),
 
 								colors: {},
 
