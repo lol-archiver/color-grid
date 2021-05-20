@@ -36,6 +36,7 @@
 
 <script>
 	import { computed, ref, toRefs } from 'vue';
+	import detectColorWhite from '../lib/ContrastRatio';
 
 	export default {
 		props: {
@@ -91,11 +92,11 @@
 				'#D33528#ECF9F8': 'LPL',
 			};
 
-			const colorsWhite = [
-				'#27211C', '#2756CE', '#54209B', '#5F432B', '#9F4A25', '#D33528',
-				'#0C0C0F', '#162D57', '#A50031', '#9B1520', '#000000', '#0C0E15',
-				'#611B9E', '#C33C3E', '#BD1357', '#19182A', '#C50041', '#162B30',
-			];
+			// const colorsWhite = [
+			// 	'#27211C', '#2756CE', '#54209B', '#5F432B', '#9F4A25', '#D33528',
+			// 	'#0C0C0F', '#162D57', '#A50031', '#9B1520', '#000000', '#0C0E15',
+			// 	'#611B9E', '#C33C3E', '#BD1357', '#19182A', '#C50041', '#162B30',
+			// ];
 
 			const parseColor = item => {
 				let back = '#ffffff';
@@ -180,8 +181,8 @@
 										nameCN = chCN.name.replace(skinCN.name, '').trim();
 									}
 
-									nameEN = `<span style="${colorsWhite.includes(colors[0]) ? '' : 'color: #353637;'}">${nameEN}</span>`;
-									nameCN = `<span style="${colorsWhite.includes(colors[1]) ? '' : 'color: #353637;'}">${nameCN}</span>`;
+									nameEN = `<span style="${detectColorWhite(colors[0]) ? '' : 'color: #353637;'}">${nameEN}</span>`;
+									nameCN = `<span style="${detectColorWhite(colors[1]) ? '' : 'color: #353637;'}">${nameCN}</span>`;
 
 
 									return {
