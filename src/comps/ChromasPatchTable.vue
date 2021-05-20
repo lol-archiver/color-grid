@@ -36,6 +36,7 @@
 
 <script>
 	import { computed, ref, toRefs } from 'vue';
+
 	export default {
 		props: {
 			data: {
@@ -71,6 +72,23 @@
 				'#88FF00#00B170': 'Jadeclaw',
 				'#B2D1E4#3CABFF': 'Hunter',
 				'#0C0C0F#B2D1E4': 'Night',
+				'#162D57#A50031': 'Chrono',
+				'#0C0C0F#9B1520': 'Elite',
+				'#000000#A50031': 'Antimatter',
+				'#0C0E15#611B9E': 'Peacekeeper',
+				'#6FFDFF#2377FF': 'Paragon',
+				'#C33C3E#0C0E15': 'Pariah',
+				'#E58BA5#6FFDFF': 'Sweet Tooth',
+				'#BD1357#19182A': 'Freestyle',
+				'#95ECFF#C33C3E': 'Nomad',
+				'#E0FFFF#C50041': 'Heavenly Crane',
+				'#FF5500#162B30': 'Reckoning',
+				'#611B9E#19E888': 'Neon Noir',
+				'#A5FFF8#D87BFF': 'K.O.',
+				'#D33528#2756CE': 'Fan Pass',
+				'#DF6C0E#0DCADB': 'LEC',
+				'#6ABBEE#FFEE59': 'LCS',
+				'#D33528#ECF9F8': 'LPL',
 			};
 
 			const colorsWhite = [
@@ -78,13 +96,6 @@
 				'#0C0C0F', '#162D57', '#A50031', '#9B1520', '#000000', '#0C0E15',
 				'#611B9E', '#C33C3E', '#BD1357', '#19182A', '#C50041', '#162B30',
 			];
-
-			// 1 skinsNew
-			// 2 championsNew
-			// 3 championsUpdate
-			// 4 voicesUpdate
-			// 5 vfxUpdate
-			// 6 chromasAppend
 
 			const parseColor = item => {
 				let back = '#ffffff';
@@ -125,6 +136,8 @@
 					r[version] = !patch.length ?
 						[{ name: '', colors: {}, chromas: [{ name: '', colors: ['transparent', 'transparent'] }] }] :
 						patch.map(item => {
+							if(![1, 2, 6].includes(item.type)) { return; }
+
 							const [cid, sid] = item.csid.split(/(?<=^(?:.{3})+)(?!$)/).map(id => Number(id));
 							const championCN = championsCN.value[cid];
 							const skinCN = championCN.skins[sid];
@@ -147,6 +160,8 @@
 
 								isLimit: Boolean(tags.includes('lm')),
 								isUpdate: Boolean(tags.includes('up')),
+
+								isSplit: Boolean(tags.includes('sp')),
 
 								colors: {},
 
@@ -178,6 +193,10 @@
 								name: `${skinEN.name}\n${skinCN.name}`,
 							};
 
+							if(sid == 0) {
+								result.name = `${championEN.name}, ${championEN.title}\n${championCN.title} ${championCN.name}`;
+							}
+
 							parseColor(result);
 
 							if(!result.chromas.length) {
@@ -190,7 +209,7 @@
 							}
 
 							return result;
-						});
+						}).filter(i => i);
 
 					return r;
 				}, {})
