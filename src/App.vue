@@ -14,7 +14,7 @@
 	export default {
 		setup() {
 			const data = ref({ champion: { cn: {}, en: {} }, patches: {} });
-			const compNow = ref('');
+			const compNow = ref(null);
 			const compNowPrepare = ref('');
 
 			onBeforeMount(async () => {
