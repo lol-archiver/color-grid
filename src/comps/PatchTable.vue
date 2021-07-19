@@ -68,8 +68,11 @@
 				// 史诗
 				else { back = '#DAC2EC'; }
 
+
+				// 重做的传说
+				if(item.isUpdate && item.isLegendary) { font = '#3f51b5'; }
 				// 重做
-				if(item.isUpdate) { font = '#C00000'; }
+				else if(item.isUpdate) { font = '#C00000'; }
 				// 非史诗的限定
 				else if(back != '#BDD7EE' && item.isLimit) { font = '#396c9a'; }
 
@@ -225,7 +228,7 @@
 
 <style scoped>
 ._typeFirst::before {
-	content: '';
+	content: "";
 	position: absolute;
 	border-left: 1px solid snow;
 	height: 100%;
@@ -247,7 +250,7 @@
 	min-width: 6rem;
 }
 .Item._split::before {
-	content: '';
+	content: "";
 	position: absolute;
 	border-left: 1px solid #3536376b;
 	height: 40%;
@@ -262,5 +265,4 @@
 	width: 0px;
 	height: 0px;
 }
-
 </style>
