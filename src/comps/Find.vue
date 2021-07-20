@@ -34,8 +34,8 @@
 						const { id: sid, name } = skin;
 
 						for(const cond of conds.value) {
-							if(name.includes(cond)) {
-								names.add(`${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)} ${name}`);
+							if(cond && name.includes(cond)) {
+								names.add(`"${name}^${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)}.ns.",`);
 							}
 						}
 					});

@@ -3,32 +3,43 @@
 		<div class="relative w-full h-14 leading-14 overflow-hidden">
 			<div class="inline-block align-top relative w-24 text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125">版本</div>
 			<div ref="Header" class="Header _hideBar inline-block align-top relative whitespace-nowrap h-14 leading-14 overflow-auto" style="width: calc(100% - 6rem - 7px)">
-				<div v-if="sizesPatches['main']" class="Item _typeFirst inline-block relative text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125" :style="{ width: `${widthsPatches['main'] || 240}px` }">全新推出</div>
-				<div v-if="sizesPatches['skin']" class="Item _typeFirst inline-block relative text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125" :style="{ width: `${widthsPatches['skin'] || 240}px` }">品质升级</div>
-				<div v-if="sizesPatches['skill']" class="Item _typeFirst inline-block relative text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125" :style="{ width: `${widthsPatches['skill'] || 240}px` }">技能重做</div>
-				<div v-if="sizesPatches['voice']" class="Item _typeFirst inline-block relative text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125" :style="{ width: `${widthsPatches['voice'] || 240}px` }">语音更新</div>
-				<div v-if="sizesPatches['chromas']" class="Item _typeFirst inline-block relative text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125" :style="{ width: `${widthsPatches['chromas'] || 240}px` }">炫彩追加</div>
+				<div class="Item _lineFirst inline-block relative text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125" :style="{ width: `100%` }">更新内容</div>
 			</div>
 		</div>
 		<div ref="Patcher" class="Patcher _hideBar relative w-24 overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
-			<div v-for="(patch, pid) in patchesParsed" class="relative w-full h-14 leading-14 text-center bg-gray-600 cursor-pointer select-none filter hover:contrast-125">
+			<div v-for="(patch, pid, index) in patchesParsed" class="relative w-full text-center cursor-pointer select-none filter hover:contrast-125"
+				:class="{
+					'bg-gray-500': (index % 2),
+					'bg-gray-600': !(index % 2),
+				}"
+				:style="{
+					height: `${0.25*14*(countsType[pid]|| 1)}rem`,
+					lineHeight: `${0.25*14*(countsType[pid]|| 1)}rem`,
+				}"
+			>
 				{{pid}}
 			</div>
 		</div>
 		<div ref="Table" class="Table relative overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
 			<table ref="TableItem">
-				<tr v-for="patch in patchesParsed">
+				<template v-for="(patch, pid) in patchesParsed">
 					<template v-for="(patchType, type) of patch">
-						<td v-for="(item, idItem) of patchType"
-							class="Item relative h-14 px-4 py-0 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer select-none"
-							:class="{ _split: item.isSplit && idItem != 0, _typeFirst: idItem == 0 }"
-							:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
-						>
-							{{item.name}}
-						</td>
-						<td v-if="sizesPatches[type] > patchType.length" class="Item relative h-14" :class="{ _typeFirst: patchType.length == 0 }" :colspan="sizesPatches[type] - patchType.length" />
+						<tr v-if="patchType.length" class="relative">
+							<td v-for="(item, idItem) of patchType"
+								class="Item relative h-14 px-4 py-0 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer select-none"
+								:class="{
+									_split: item.isSplit && idItem != 0,
+									_lineFirst: idItem == 0
+								}"
+								:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
+							>
+								{{item.name}}
+							</td>
+							<div v-if="type != 'main'" class="absolute block -top-2 left-1 text-xs text-gray-500">{{namesType[type]}}</div>
+						</tr>
 					</template>
-				</tr>
+					<tr v-if="countsType[pid] == 0" class="Item _lineFirst relative h-14" />
+				</template>
 			</table>
 		</div>
 	</div>
@@ -97,7 +108,7 @@
 						const championEN = championsEN.value[cid];
 						const skinEN = championEN.skins[sid];
 
-						const tags = item.tags ? item.tags.split('|') : [];
+						const tags = (item.tag ?? '').split('|');
 
 						const result = {
 							csid: item.csid,
@@ -127,11 +138,11 @@
 
 						parseColor(result);
 
-						if(result.type == 1 || result.type == 2) { rr.main.push(result); }
-						else if(result.type == 3) { rr.skin.push(result); }
-						else if(result.type == 4) { rr.skill.push(result); }
-						else if(result.type == 5) { rr.voice.push(result); }
-						else if(result.type == 6) { rr.chromas.push(result); }
+						if(result.type == 'ns' || result.type == 'nh') { rr.main.push(result); }
+						else if(result.type == 'up') { rr.skin.push(result); }
+						else if(result.type == 'uh') { rr.skill.push(result); }
+						else if(result.type == 'uv') { rr.voice.push(result); }
+						else if(result.type == 'uc') { rr.chromas.push(result); }
 
 						return rr;
 					}, { main: [], skin: [], skill: [], voice: [], chromas: [] });
@@ -140,31 +151,26 @@
 				}, {})
 			);
 
-			// 1 新皮肤
-			// 2 新英雄、完整重做英雄
-			// 3 技能特效升级的英雄（系列，包括其皮肤的批量升级），皮肤（单独升级）
-			// 4 技能更新英雄（重做、更新技能，技能重新带来的个别新特效不单独列出）
-			// 5 语音更新英雄或皮肤
-			// 6 炫彩追加英雄或皮肤
-			const sizesPatches = computed(() => Object.values(patchesParsed.value).reduce((r, patch) => {
-				r.main = Math.max(patch.main.length, r.main);
-				r.skin = Math.max(patch.skin.length, r.skin);
-				r.skill = Math.max(patch.skill.length, r.skill);
-				r.voice = Math.max(patch.voice.length, r.voice);
-				r.chromas = Math.max(patch.chromas.length, r.chromas);
+			// 1 ns 新皮肤
+			// 2 nh 新英雄、完整重做英雄
+			// 3 up 技能特效升级的英雄（系列，包括其皮肤的批量升级），皮肤（单独升级）
+			// 4 uh 技能更新英雄（重做、更新技能，技能重新带来的个别新特效不单独列出）
+			// 5 uv 语音更新英雄或皮肤
+			// 6 uc 炫彩追加英雄或皮肤
+			const countsType = computed(() => Object.entries(patchesParsed.value).reduce((r, [pid, patch]) => {
+				r[pid] = (patch.main.length > 0) + (patch.skin.length > 0) + (patch.skill.length > 0) + (patch.voice.length > 0) + (patch.chromas.length > 0);
 
 				return r;
-			}, { main: 0, skin: 0, skill: 0, voice: 0, chromas: 0 }));
+			}, {}));
 
 			return {
 				patchesParsed,
 				scrollNow: 1,
-				sizesPatches,
-				widthsPatches: ref({ main: 0, skin: 0, skill: 0, voice: 0, chromas: 0 })
+				countsType,
+				namesType: ref({ main: '全新推出', skin: '品质更新', skill: '技能更新', voice: '语音更新', chromas: '炫彩追加' })
 			};
 		},
 		mounted() {
-			this.calcWidthsPatches();
 		},
 		methods: {
 			atOver(event) {
@@ -202,35 +208,15 @@
 
 				Header.scrollLeft = Table.scrollLeft / scaleHeader;
 			},
-
-			calcWidthsPatches() {
-				const tds = [...this.$refs.TableItem.querySelector('tr').children];
-
-				const keys = Object.keys(this.widthsPatches);
-
-				let keyNow = keys.shift();
-				let spans = 0;
-				tds.forEach(td => {
-					const colspan = ~~(td.getAttribute('colspan') || 1);
-
-					this.widthsPatches[keyNow] += td.getClientRects()[0].width;
-
-					spans += colspan;
-					if(spans == this.sizesPatches[keyNow]) {
-						keyNow = keys.shift();
-						spans = 0;
-					}
-				});
-			}
 		}
 	};
 </script>
 
 <style scoped>
-._typeFirst::before {
+._lineFirst::before {
 	content: "";
 	position: absolute;
-	border-left: 1px solid snow;
+	border-left: 1px solid lightgray;
 	height: 100%;
 	top: 0px;
 	left: 0px;

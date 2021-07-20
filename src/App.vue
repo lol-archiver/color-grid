@@ -2,7 +2,7 @@
 	<div class="mb-1">
 		<div class="TabButton inline-block box-border h-8 w-32 mx-4 text-center leading-8 cursor-pointer" :class="{ _now: compNow == 'PatchTable' }" @click="compNowPrepare = 'PatchTable'">主美更新表</div>
 		<div class="TabButton inline-block box-border h-8 w-32 mx-4 text-center leading-8 cursor-pointer" :class="{ _now: compNow == 'ChromasPatchTable' }" @click="compNowPrepare = 'ChromasPatchTable'">炫彩更新表</div>
-		<div class="TabButton inline-block box-border h-8 w-32 mx-4 text-center leading-8 cursor-pointer" :class="{ _now: compNow == 'Find' }" @click="compNowPrepare = 'Find'">查找</div>
+		<div class="TabButton inline-block box-border h-8 w-32 mx-4 text-center leading-8 cursor-pointer" :class="{ _now: compNow == 'Find' }" @click="compNowPrepare = 'Find'">速查</div>
 	</div>
 	<component :is="compNow" class="CompNow" :data="data" />
 </template>
@@ -20,7 +20,20 @@
 			onBeforeMount(async () => {
 				data.value.champion.cn = (await A.fetch('data/champion/zh_cn.json')).data;
 				data.value.champion.en = (await A.fetch('data/champion/en_us.json')).data;
-				data.value.patches = (await A.fetch('data/patch.json')).data;
+
+				const datasPatch = (await A.fetch('data/patch.json')).data;
+
+				for(const patch in datasPatch) {
+					const datas = datasPatch[patch];
+
+					datas.forEach((raw, index) => {
+						let [csid, type, tag, chromasAppend] = raw.split('.');
+
+						datas[index] = { csid, type, tag, chromasAppend };
+					});
+				}
+
+				data.value.patches = datasPatch;
 
 				compNowPrepare.value = 'PatchTable';
 			});

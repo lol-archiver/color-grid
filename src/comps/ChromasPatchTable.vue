@@ -22,8 +22,8 @@
 							:class="iid == 0 ? '_first' : ''"
 							style="background: rgb(255,255,255)"
 							:style="{
+								'--tw-contrast': chroma.isDark ? 'contrast(0.25)' : null,
 								background: `linear-gradient(180deg, ${chroma.colors[0]} 0%, ${chroma.colors[0]} 50%, ${chroma.colors[1]} 50%, ${chroma.colors[1]} 100%)`,
-								selectNone: !showHex
 							}"
 							v-html="chroma.name"
 						/>
@@ -69,6 +69,8 @@
 				'#ECF9F8#ECF9F8': 'Pearl',
 				'#FFEE59#FFEE59': 'Catseye',
 				'#FF2C25#FF2C25': 'Amber',
+				'#050B19#ECC124': 'Cursed',
+				'#080808#8E0A38': 'Resolute',
 
 				'#88FF00#00B170': 'Jadeclaw',
 				'#B2D1E4#3CABFF': 'Hunter',
@@ -129,6 +131,8 @@
 				item.colors.font = font;
 			};
 
+			const chromasAppendAll = {};
+
 			const showHex = ref(false);
 			const patchesParsed = computed(() =>
 				Object.entries(patches.value).reduce((r, entry) => {
@@ -137,7 +141,7 @@
 					r[version] = !patch.length ?
 						[{ name: '', colors: {}, chromas: [{ name: '', colors: ['transparent', 'transparent'] }] }] :
 						patch.map(item => {
-							if(![1, 2, 6].includes(item.type)) { return; }
+							if(!['ns', 'nh', 'uc'].includes(item.type)) { return; }
 
 							const [cid, sid] = item.csid.split(/(?<=^(?:.{3})+)(?!$)/).map(id => Number(id));
 							const championCN = championsCN.value[cid];
@@ -145,13 +149,17 @@
 							const championEN = championsEN.value[cid];
 							const skinEN = championEN.skins[sid];
 
-							const tags = item.tags ? item.tags.split('|') : [];
+							const tags = item.tag ? item.tag.split('|') : [];
+							const chromasAppend = item.chromasAppend ? item.chromasAppend.split('|') : [];
+
+							chromasAppend.forEach(colorFull => (chromasAppendAll[item.csid] ?? (chromasAppendAll[item.csid] = [])).push(colorFull));
 
 							const result = {
 								csid: item.csid,
 								cid,
 								sid,
 								type: item.type,
+								chromasAppend,
 
 								isUltimate: Boolean(tags.includes('ut')),
 								isPrestige: Boolean(tags.includes('pt')),
@@ -167,29 +175,36 @@
 								colors: {},
 
 								chromas: Object.values(skinCN.chromas || {}).map(chCN => {
-									const colors = chCN.colors;
+									const [color0, color1] = chCN.colors;
+									const colorFull = color0 + color1;
 
 
 									let nameEN;
 									let nameCN;
 									if(showHex.value) {
-										nameEN = colors[0];
-										nameCN = colors[1];
+										nameEN = color0;
+										nameCN = color1;
 									}
 									else {
-										nameEN = colorsNameEN[colors[0] + colors[1]] || '';
+										nameEN = colorsNameEN[colorFull] || '';
 										nameCN = chCN.name.replace(skinCN.name, '').trim();
 									}
 
-									nameEN = `<span style="${detectColorWhite(colors[0]) ? '' : 'color: #353637;'}">${nameEN}</span>`;
-									nameCN = `<span style="${detectColorWhite(colors[1]) ? '' : 'color: #353637;'}">${nameCN}</span>`;
+									nameEN = `<span style="${detectColorWhite(color0) ? '' : 'color: #353637;'}">${nameEN}</span>`;
+									nameCN = `<span style="${detectColorWhite(color1) ? '' : 'color: #353637;'}">${nameCN}</span>`;
 
+
+									const isDark =
+										(chromasAppend.length && !chromasAppend.includes(colorFull)) ||
+										(!chromasAppend.length && (chromasAppendAll[item.csid] ?? []).includes(colorFull));
 
 									return {
 										name: `${nameEN}\n${nameCN}`,
-										colors
+										colorText: `${color0}\n${color1}`,
+										colors: chCN.colors,
+										isDark
 									};
-								}),
+								}).sort((a, b) => a.isDark - b.isDark),
 
 								name: `${skinEN.name}\n${skinCN.name}`,
 							};
