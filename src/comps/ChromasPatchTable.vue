@@ -94,12 +94,6 @@
 				'#D33528#ECF9F8': 'LPL',
 			};
 
-			// const colorsWhite = [
-			// 	'#27211C', '#2756CE', '#54209B', '#5F432B', '#9F4A25', '#D33528',
-			// 	'#0C0C0F', '#162D57', '#A50031', '#9B1520', '#000000', '#0C0E15',
-			// 	'#611B9E', '#C33C3E', '#BD1357', '#19182A', '#C50041', '#162B30',
-			// ];
-
 			const parseColor = item => {
 				let back = '#ffffff';
 				let font = '#000000';
@@ -115,14 +109,17 @@
 				// 传说
 				else if(item.isLegendary) { back = '#FF8383'; }
 				// 破旧
-				else if(item.isTimeworn) { back = '#00C8FF'; }
+				else if(item.isTimeworn) { back = '#4EB1CC'; }
 				// 史诗限定
 				else if(item.isLimit) { back = '#BDD7EE'; }
 				// 史诗
 				else { back = '#DAC2EC'; }
 
+
+				// 重做的传说
+				if(item.isUpdate && item.isLegendary) { font = '#3f51b5'; }
 				// 重做
-				if(item.isUpdate) { font = '#C00000'; }
+				else if(item.isUpdate) { font = '#C00000'; }
 				// 非史诗的限定
 				else if(back != '#BDD7EE' && item.isLimit) { font = '#396c9a'; }
 

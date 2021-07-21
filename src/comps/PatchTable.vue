@@ -26,7 +26,7 @@
 					<template v-for="(patchType, type) of patch">
 						<tr v-if="patchType.length" class="relative">
 							<td v-for="(item, idItem) of patchType"
-								class="Item relative h-14 px-4 py-0 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer select-none"
+								class="Item relative h-14 px-4 py-0 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer"
 								:class="{
 									_split: item.isSplit && idItem != 0,
 									_lineFirst: idItem == 0
@@ -73,7 +73,7 @@
 				// 传说
 				else if(item.isLegendary) { back = '#FF8383'; }
 				// 破旧
-				else if(item.isTimeworn) { back = '#00C8FF'; }
+				else if(item.isTimeworn) { back = '#4EB1CC'; }
 				// 史诗限定
 				else if(item.isLimit) { back = '#BDD7EE'; }
 				// 史诗
@@ -167,7 +167,7 @@
 				patchesParsed,
 				scrollNow: 1,
 				countsType,
-				namesType: ref({ main: '全新推出', skin: '品质更新', skill: '技能更新', voice: '语音更新', chromas: '炫彩追加' })
+				namesType: ref({ main: '▼ 全新推出', skin: '▼ 品质更新', skill: '▼ 技能更新', voice: '▼ 语音更新', chromas: '▼ 炫彩追加' })
 			};
 		},
 		mounted() {
