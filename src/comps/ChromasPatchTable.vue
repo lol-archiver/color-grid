@@ -72,6 +72,9 @@
 				'#ECF9F8#ECF9F8': 'Pearl',
 				'#FFEE59#FFEE59': 'Catseye',
 				'#FF2C25#FF2C25': 'Amber',
+				'#FFC948#FFC948': 'Golden',
+
+				'#2377FF#2377FF': 'Sapphire',
 
 				'#88FF00#00B170': 'Jadeclaw',
 				'#B2D1E4#3CABFF': 'Hunter',
@@ -99,6 +102,8 @@
 				'#9DFFEF#AA55FF': 'Disco',
 				'#88FF00#9B1520': 'Vitality',
 				'#0C0C0F#272A3F': 'BADDEST',
+				'#FF80B1#9DFFEF': 'Coronation',
+				'#27211C#971458': 'Emberwood',
 			};
 
 			const chromasAppendAll = {};
@@ -110,95 +115,97 @@
 
 					r[version] = !patch.length ?
 						[{ name: '', colors: {}, chromas: [{ name: '', colors: ['transparent', 'transparent'] }] }] :
-						patch.map(item => {
-							if(!['ns', 'nh', 'uc'].includes(item.type)) { return; }
+						patch
+							.filter(item => ['ns', 'nh', 'uc'].includes(item.type))
+							.map(item => {
+								const [cid, sid] = item.csid.split(/(?<=^(?:.{3})+)(?!$)/).map(id => Number(id));
+								const championCN = championsCN.value[cid];
+								const skinCN = championCN.skins[sid];
+								const championEN = championsEN.value[cid];
+								const skinEN = championEN.skins[sid];
 
-							const [cid, sid] = item.csid.split(/(?<=^(?:.{3})+)(?!$)/).map(id => Number(id));
-							const championCN = championsCN.value[cid];
-							const skinCN = championCN.skins[sid];
-							const championEN = championsEN.value[cid];
-							const skinEN = championEN.skins[sid];
+								const tags = item.tag ? item.tag.split('|') : [];
+								const chromasAppend = item.chromasAppend ? item.chromasAppend.split('|') : [];
 
-							const tags = item.tag ? item.tag.split('|') : [];
-							const chromasAppend = item.chromasAppend ? item.chromasAppend.split('|') : [];
+								chromasAppend.forEach(colorFull => (chromasAppendAll[item.csid] ?? (chromasAppendAll[item.csid] = [])).push(colorFull));
 
-							chromasAppend.forEach(colorFull => (chromasAppendAll[item.csid] ?? (chromasAppendAll[item.csid] = [])).push(colorFull));
+								const result = {
+									csid: item.csid,
+									cid,
+									sid,
+									type: item.type,
+									chromasAppend,
 
-							const result = {
-								csid: item.csid,
-								cid,
-								sid,
-								type: item.type,
-								chromasAppend,
+									isUltimate: Boolean(tags.includes('ut')),
+									isPrestige: Boolean(tags.includes('pt')),
+									isMythic: Boolean(tags.includes('my')),
+									isLegendary: Boolean(tags.includes('lg')),
+									isTimeworn: Boolean(tags.includes('tw')),
 
-								isUltimate: Boolean(tags.includes('ut')),
-								isPrestige: Boolean(tags.includes('pt')),
-								isMythic: Boolean(tags.includes('my')),
-								isLegendary: Boolean(tags.includes('lg')),
-								isTimeworn: Boolean(tags.includes('tw')),
+									isLimit: Boolean(tags.includes('lm')),
+									isUpdate: Boolean(tags.includes('up')),
 
-								isLimit: Boolean(tags.includes('lm')),
-								isUpdate: Boolean(tags.includes('up')),
+									isSplit: Boolean(tags.includes('sp')),
 
-								isSplit: Boolean(tags.includes('sp')),
+									colors: {},
 
-								colors: {},
-
-								chromas: Object.values(skinCN.chromas || {}).map(chCN => {
-									const [color0, color1] = chCN.colors ?? ['', ''];
-									const colorFull = color0 + color1;
+									chromas: Object.values(skinCN.chromas || {}).map(chCN => {
+										const [color0, color1] = chCN.colors ?? ['#000000', '#000000'];
+										const colorFull = color0 + color1;
 
 
-									let nameEN;
-									let nameCN;
-									if(showHex.value) {
-										nameEN = color0;
-										nameCN = color1;
+										let nameEN;
+										let nameCN;
+										if(showHex.value) {
+											nameEN = color0;
+											nameCN = color1;
+										}
+										else {
+											nameEN = (chCN.stage ?
+												skinEN.chromas[chCN.id]?.name.replace(skinEN.nameStage ?? skinEN.name, '').trim() :
+												colorsNameEN[colorFull]
+											) ?? '';
+											nameCN = chCN.name.replace(skinCN.nameStage ?? skinCN.name, '').trim();
+										}
+
+										if(!nameEN) { (console || {}).log('炫彩英文名缺失', item.csid, skinCN.name, skinEN.name, color0, color1); }
+
+										nameEN = `<span style="${detectColorWhite(color0) ? '' : 'color: #353637;'}">${nameEN}</span>`;
+										nameCN = `<span style="${detectColorWhite(color1) ? '' : 'color: #353637;'}">${nameCN}</span>`;
+
+
+										const isDark =
+											(chromasAppend.length && !chromasAppend.includes(colorFull)) ||
+											(!chromasAppend.length && (chromasAppendAll[item.csid] ?? []).includes(colorFull));
+
+										return {
+											name: `${nameEN}\n${nameCN}`,
+											colorText: `${color0}\n${color1}`,
+											colors: chCN.colors ?? ['#000000', '#000000'],
+											isDark
+										};
+									}).sort((a, b) => a.isDark - b.isDark),
+
+									name: `${skinEN.nameStage ?? skinEN.name}\n${skinCN.nameStage ?? skinCN.name}`,
+								};
+
+								if(sid == 0) {
+									result.name = `${championEN.name}, ${championEN.title}\n${championCN.title} ${championCN.name}`;
+								}
+
+								parseColor(result);
+
+								if(!result.chromas.length) {
+									if(result.isPrestige) {
+										result.chromas.push({ isColspan: true, name: '<span style="color: #353637;">至臻</span>', colors: ['#FFFF66', '#FFFF66'] });
 									}
 									else {
-										nameEN = (chCN.stage ?
-											skinEN.chromas[chCN.id]?.name.replace(skinEN.nameStage ?? skinEN.name, '').trim() :
-											colorsNameEN[colorFull]
-										) ?? '';
-										nameCN = chCN.name.replace(skinCN.nameStage ?? skinCN.name, '').trim();
+										result.chromas.push({ isColspan: true, name: '<span style="color: #353637;">无</span>', colors: ['snow', 'snow'] });
 									}
-
-									nameEN = `<span style="${detectColorWhite(color0) ? '' : 'color: #353637;'}">${nameEN}</span>`;
-									nameCN = `<span style="${detectColorWhite(color1) ? '' : 'color: #353637;'}">${nameCN}</span>`;
-
-
-									const isDark =
-										(chromasAppend.length && !chromasAppend.includes(colorFull)) ||
-										(!chromasAppend.length && (chromasAppendAll[item.csid] ?? []).includes(colorFull));
-
-									return {
-										name: `${nameEN}\n${nameCN}`,
-										colorText: `${color0}\n${color1}`,
-										colors: chCN.colors ?? ['', ''],
-										isDark
-									};
-								}).sort((a, b) => a.isDark - b.isDark),
-
-								name: `${skinEN.nameStage ?? skinEN.name}\n${skinCN.nameStage ?? skinCN.name}`,
-							};
-
-							if(sid == 0) {
-								result.name = `${championEN.name}, ${championEN.title}\n${championCN.title} ${championCN.name}`;
-							}
-
-							parseColor(result);
-
-							if(!result.chromas.length) {
-								if(result.isPrestige) {
-									result.chromas.push({ isColspan: true, name: '<span style="color: #353637;">至臻</span>', colors: ['#FFFF66', '#FFFF66'] });
 								}
-								else {
-									result.chromas.push({ isColspan: true, name: '<span style="color: #353637;">无</span>', colors: ['snow', 'snow'] });
-								}
-							}
 
-							return result;
-						}).filter(i => i);
+								return result;
+							}).filter(i => i);
 
 					return r;
 				}, {})
