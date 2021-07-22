@@ -23,21 +23,35 @@
 		<div ref="Table" class="Table relative overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
 			<table ref="TableItem">
 				<template v-for="(patch, pid) in patchesParsed">
-					<template v-for="(patchType, type) of patch">
-						<tr v-if="patchType.length" class="relative">
-							<td v-for="(item, idItem) of patchType"
-								class="Item relative h-14 px-4 py-0 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer"
-								:class="{
-									_split: item.isSplit && idItem != 0,
-									_lineFirst: idItem == 0
-								}"
-								:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
-							>
-								{{item.name}}
-							</td>
-							<div v-if="type != 'main'" class="absolute block -top-2 left-1 text-xs text-gray-500">{{namesType[type]}}</div>
-						</tr>
-					</template>
+					<tr v-if="patch.main.length" class="relative">
+						<td v-for="(item, idItem) of patch.main"
+							class="Item relative px-4 py-0 h-14 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer"
+							:class="{
+								_split: item.isSplit && idItem != 0,
+								_lineFirst: idItem == 0
+							}"
+							:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
+						>
+							{{item.name}}
+						</td>
+					</tr>
+					<tr class="relative">
+						<template v-for="(patchType, type) of patch">
+							<template v-if="type != 'main' && patchType.length" class="relative">
+								<td v-for="(item, idItem) of patchType"
+									class="Item relative px-4 py-0 h-14 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer"
+									:class="{
+										_split: item.isSplit && idItem != 0,
+										_lineFirst: idItem == 0
+									}"
+									:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
+								>
+									{{item.name}}
+									<div v-if="idItem == 0" class="absolute block -top-2 left-1 text-xs text-gray-500">{{namesType[type]}}</div>
+								</td>
+							</template>
+						</template>
+					</tr>
 					<tr v-if="countsType[pid] == 0" class="Item _lineFirst relative h-14" />
 				</template>
 			</table>
@@ -129,7 +143,7 @@
 
 							colors: {},
 
-							name: `${skinEN.name}\n${skinCN.name}`,
+							name: `${skinEN.nameStage ?? skinEN.name}\n${skinCN.nameStage ?? skinCN.name}`,
 						};
 
 						if(sid == 0) {
@@ -158,7 +172,7 @@
 			// 5 uv 语音更新英雄或皮肤
 			// 6 uc 炫彩追加英雄或皮肤
 			const countsType = computed(() => Object.entries(patchesParsed.value).reduce((r, [pid, patch]) => {
-				r[pid] = (patch.main.length > 0) + (patch.skin.length > 0) + (patch.skill.length > 0) + (patch.voice.length > 0) + (patch.chromas.length > 0);
+				r[pid] = (patch.main.length > 0) + (patch.skin.length > 0 || patch.skill.length > 0 || patch.voice.length > 0 || patch.chromas.length > 0);
 
 				return r;
 			}, {}));

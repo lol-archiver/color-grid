@@ -35,7 +35,7 @@
 
 						for(const cond of conds.value) {
 							if(cond && name.includes(cond)) {
-								names.add(`"${name}^${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)}.ns.",`);
+								names.add(`${name}^"${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)}.ns",`);
 							}
 						}
 					});

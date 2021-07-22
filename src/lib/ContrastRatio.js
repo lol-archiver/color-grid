@@ -82,6 +82,7 @@ const contrastRatio = function(colorA, colorB) {
 const dict = {};
 
 export default function detectColorWhite(strColor) {
+	if(!strColor) { return true; }
 	if(dict[strColor]) { return strColor; }
 
 	const color = parseColor(strColor);

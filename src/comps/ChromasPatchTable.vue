@@ -69,8 +69,6 @@
 				'#ECF9F8#ECF9F8': 'Pearl',
 				'#FFEE59#FFEE59': 'Catseye',
 				'#FF2C25#FF2C25': 'Amber',
-				'#050B19#ECC124': 'Cursed',
-				'#080808#8E0A38': 'Resolute',
 
 				'#88FF00#00B170': 'Jadeclaw',
 				'#B2D1E4#3CABFF': 'Hunter',
@@ -92,6 +90,12 @@
 				'#DF6C0E#0DCADB': 'LEC',
 				'#6ABBEE#FFEE59': 'LCS',
 				'#D33528#ECF9F8': 'LPL',
+				'#050B19#ECC124': 'Cursed',
+				'#080808#8E0A38': 'Resolute',
+				'#050B19#0055FF': 'Elite',
+				'#9DFFEF#AA55FF': 'Disco',
+				'#88FF00#9B1520': 'Vitality',
+				'#0C0C0F#272A3F': 'BADDEST',
 			};
 
 			const parseColor = item => {
@@ -172,7 +176,7 @@
 								colors: {},
 
 								chromas: Object.values(skinCN.chromas || {}).map(chCN => {
-									const [color0, color1] = chCN.colors;
+									const [color0, color1] = chCN.colors ?? ['', ''];
 									const colorFull = color0 + color1;
 
 
@@ -183,8 +187,11 @@
 										nameCN = color1;
 									}
 									else {
-										nameEN = colorsNameEN[colorFull] || '';
-										nameCN = chCN.name.replace(skinCN.name, '').trim();
+										nameEN = (chCN.stage ?
+											skinEN.chromas[chCN.id]?.name.replace(skinEN.nameStage ?? skinEN.name, '').trim() :
+											colorsNameEN[colorFull]
+										) ?? '';
+										nameCN = chCN.name.replace(skinCN.nameStage ?? skinCN.name, '').trim();
 									}
 
 									nameEN = `<span style="${detectColorWhite(color0) ? '' : 'color: #353637;'}">${nameEN}</span>`;
@@ -198,12 +205,12 @@
 									return {
 										name: `${nameEN}\n${nameCN}`,
 										colorText: `${color0}\n${color1}`,
-										colors: chCN.colors,
+										colors: chCN.colors ?? ['', ''],
 										isDark
 									};
 								}).sort((a, b) => a.isDark - b.isDark),
 
-								name: `${skinEN.name}\n${skinCN.name}`,
+								name: `${skinEN.nameStage ?? skinEN.name}\n${skinCN.nameStage ?? skinCN.name}`,
 							};
 
 							if(sid == 0) {

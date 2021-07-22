@@ -25494,7 +25494,7 @@
 				"chromas": {
 					"28": {
 						"id": 28,
-						"name": "K/DA ALL OUT 卡莎 (BADDEST)",
+						"name": "K/DA ALL OUT 卡莎 BADDEST",
 						"colors": [
 							"#0C0C0F",
 							"#272A3F"
@@ -25535,6 +25535,7 @@
 			"1": {
 				"id": 1,
 				"name": "K/DA ALL OUT 萨勒芬妮 独立音乐人",
+				"nameStage": "K/DA ALL OUT 萨勒芬妮",
 				"chromas": {
 					"2": {
 						"id": 2,
