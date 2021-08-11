@@ -59,139 +59,130 @@
 	</div>
 </template>
 
-<script>
+<script setup>
+	/* global defineProps */
+
 	import { computed, toRefs, ref } from 'vue';
 	import parseColor from '../lib/parseColor';
 
 
-	export default {
-		props: {
-			data: {
-				type: Object,
-				default: () => ({ champion: { cn: {}, en: {} }, patches: {} })
-			},
+	const props = defineProps({
+		data: {
+			type: Object,
+			default: () => ({ champion: { cn: {}, en: {} }, patches: {} })
 		},
-		setup(props) {
-			const { champion, patches } = toRefs(props.data);
-			const { cn: championsCN, en: championsEN } = toRefs(champion.value);
+	});
 
-			const patchesParsed = computed(() =>
-				Object.entries(patches.value).reduce((r, entry) => {
-					const [version, patch] = entry;
 
-					// 版本过滤
-					// const versionNumber = Number(version.replace('.', ''));
-					// if(910 > versionNumber || versionNumber > 919) { return r; }
+	const { champion, patches } = toRefs(props.data);
+	const { cn: championsCN, en: championsEN } = toRefs(champion.value);
 
-					r[version] = patch.reduce((rr, item) => {
-						const [cid, sid] = item.csid.split(/(?<=^(?:.{3})+)(?!$)/).map(id => Number(id));
+	const patchesParsed = computed(() =>
+		Object.entries(patches.value).reduce((r, entry) => {
+			const [version, patch] = entry;
 
-						const championCN = championsCN.value[cid];
-						const skinCN = championCN.skins[sid];
-						const championEN = championsEN.value[cid];
-						const skinEN = championEN.skins[sid];
+			// 版本过滤
+			// const versionNumber = Number(version.replace('.', ''));
+			// if(910 > versionNumber || versionNumber > 919) { return r; }
 
-						const tags = (item.tag ?? '').split('|');
+			r[version] = patch.reduce((rr, item) => {
+				const [cid, sid] = item.csid.split(/(?<=^(?:.{3})+)(?!$)/).map(id => Number(id));
 
-						const result = {
-							csid: item.csid,
-							cid,
-							sid,
-							type: item.type,
+				const championCN = championsCN.value[cid];
+				const skinCN = championCN.skins[sid];
+				const championEN = championsEN.value[cid];
+				const skinEN = championEN.skins[sid];
 
-							isUltimate: Boolean(tags.includes('ut')),
-							isPrestige: Boolean(tags.includes('pt')),
-							isMythic: Boolean(tags.includes('my')),
-							isLegendary: Boolean(tags.includes('lg')),
-							isTimeworn: Boolean(tags.includes('tw')),
+				const tags = (item.tag ?? '').split('|');
 
-							isLimit: Boolean(tags.includes('lm')),
-							isUpdate: Boolean(tags.includes('up')),
+				const result = {
+					csid: item.csid,
+					cid,
+					sid,
+					type: item.type,
 
-							isSplit: Boolean(tags.includes('sp')),
+					isUltimate: Boolean(tags.includes('ut')),
+					isPrestige: Boolean(tags.includes('pt')),
+					isMythic: Boolean(tags.includes('my')),
+					isLegendary: Boolean(tags.includes('lg')),
+					isTimeworn: Boolean(tags.includes('tw')),
 
-							colors: {},
+					isLimit: Boolean(tags.includes('lm')),
+					isUpdate: Boolean(tags.includes('up')),
 
-							name: `${skinEN.nameStage ?? skinEN.name}\n${skinCN.nameStage ?? skinCN.name}`,
-						};
+					isSplit: Boolean(tags.includes('sp')),
 
-						if(sid == 0) {
-							result.name = `${championEN.name}, ${championEN.title}\n${championCN.title} ${championCN.name}`;
-						}
+					colors: {},
 
-						parseColor(result);
+					name: `${skinEN.nameStage ?? skinEN.name}\n${skinCN.nameStage ?? skinCN.name}`,
+				};
 
-						if(result.type == 'ns' || result.type == 'nh') { rr.main.push(result); }
-						else if(result.type == 'up') { rr.skin.push(result); }
-						else if(result.type == 'uh') { rr.skill.push(result); }
-						else if(result.type == 'uv') { rr.voice.push(result); }
-						else if(result.type == 'uc') { rr.chromas.push(result); }
-
-						return rr;
-					}, { main: [], skin: [], skill: [], voice: [], chromas: [] });
-
-					return r;
-				}, {})
-			);
-
-			// 1 ns 新皮肤
-			// 2 nh 新英雄、完整重做英雄
-			// 3 up 技能特效升级的英雄（系列，包括其皮肤的批量升级），皮肤（单独升级）
-			// 4 uh 技能更新英雄（重做、更新技能，技能重新带来的个别新特效不单独列出）
-			// 5 uv 语音更新英雄或皮肤
-			// 6 uc 炫彩追加英雄或皮肤
-			const countsType = computed(() => Object.entries(patchesParsed.value).reduce((r, [pid, patch]) => {
-				r[pid] = (patch.main.length > 0) + (patch.skin.length > 0 || patch.skill.length > 0 || patch.voice.length > 0 || patch.chromas.length > 0);
-
-				return r;
-			}, {}));
-
-			return {
-				patchesParsed,
-				scrollNow: 1,
-				countsType,
-				namesType: ref({ main: '▼ 全新推出', skin: '▼ 品质更新', skill: '▼ 技能更新', voice: '▼ 语音更新', chromas: '▼ 炫彩追加' })
-			};
-		},
-		mounted() {
-		},
-		methods: {
-			atOver(event) {
-				this.scrollNow = event.target;
-			},
-			atTouch(event) {
-				const Patcher = this.$refs.Patcher;
-				const Table = this.$refs.Table;
-
-				let nodeNow = event.target;
-
-				while(nodeNow.parentNode) {
-					nodeNow = nodeNow.parentNode;
-
-					if(nodeNow == Patcher || nodeNow == Table) {
-						this.scrollNow = nodeNow;
-					}
+				if(sid == 0) {
+					result.name = `${championEN.name}, ${championEN.title}\n${championCN.title} ${championCN.name}`;
 				}
-			},
-			atScroll(event) {
-				if(this.scrollNow !== event.target) { return; }
 
-				const Patcher = this.$refs.Patcher;
-				const Table = this.$refs.Table;
-				const Header = this.$refs.Header;
+				parseColor(result);
 
-				const target = event.target;
-				const binder = event.target === Table ? Patcher : Table;
+				if(result.type == 'ns' || result.type == 'nh') { rr.main.push(result); }
+				else if(result.type == 'up') { rr.skin.push(result); }
+				else if(result.type == 'uh') { rr.skill.push(result); }
+				else if(result.type == 'uv') { rr.voice.push(result); }
+				else if(result.type == 'uc') { rr.chromas.push(result); }
 
-				const scaleHeight = (target.scrollHeight - target.clientHeight) / (binder.scrollHeight - binder.clientHeight);
+				return rr;
+			}, { main: [], skin: [], skill: [], voice: [], chromas: [] });
 
-				binder.scrollTop = target.scrollTop / scaleHeight;
+			return r;
+		}, {})
+	);
 
-				const scaleHeader = (Header.scrollWidth - Header.clientWidth) / (Table.scrollWidth - Table.clientWidth);
+	// 1 ns 新皮肤
+	// 2 nh 新英雄、完整重做英雄
+	// 3 up 技能特效升级的英雄（系列，包括其皮肤的批量升级），皮肤（单独升级）
+	// 4 uh 技能更新英雄（重做、更新技能，技能重新带来的个别新特效不单独列出）
+	// 5 uv 语音更新英雄或皮肤
+	// 6 uc 炫彩追加英雄或皮肤
+	const countsType = computed(() => Object.entries(patchesParsed.value).reduce((r, [pid, patch]) => {
+		r[pid] = (patch.main.length > 0) + (patch.skin.length > 0 || patch.skill.length > 0 || patch.voice.length > 0 || patch.chromas.length > 0);
 
-				Header.scrollLeft = Table.scrollLeft / scaleHeader;
-			},
+		return r;
+	}, {}));
+
+	const scrollNow = ref(1);
+	const namesType = ref({ main: '▼ 全新推出', skin: '▼ 品质更新', skill: '▼ 技能更新', voice: '▼ 语音更新', chromas: '▼ 炫彩追加' });
+
+	const Patcher = ref(null);
+	const Table = ref(null);
+	const Header = ref(null);
+
+	const atOver = event => {
+		scrollNow.value = event.target;
+	};
+	const atTouch = event => {
+
+		let nodeNow = event.target;
+
+		while(nodeNow.parentNode) {
+			nodeNow = nodeNow.parentNode;
+
+			if(nodeNow == Patcher.value || nodeNow == Table.value) {
+				scrollNow.value = nodeNow;
+			}
 		}
+	};
+	const atScroll = event => {
+		if(scrollNow.value !== event.target) { return; }
+
+		const target = event.target;
+		const binder = event.target === Table.value ? Patcher.value : Table.value;
+
+		const scaleHeight = (target.scrollHeight - target.clientHeight) / (binder.scrollHeight - binder.clientHeight);
+
+		binder.scrollTop = target.scrollTop / scaleHeight;
+
+		const scaleHeader = (Header.value.scrollWidth - Header.value.clientWidth) / (Table.value.scrollWidth - Table.value.clientWidth);
+
+		Header.value.scrollLeft = Table.value.scrollLeft / scaleHeader;
 	};
 </script>
 

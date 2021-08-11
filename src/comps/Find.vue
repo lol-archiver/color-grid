@@ -6,54 +6,52 @@
 	</div>
 </template>
 
-<script>
+<script setup>
+	/* global defineProps */
+
 	import { computed, ref, toRefs } from 'vue';
-	export default {
-		props: {
-			data: {
-				type: Object,
-				default: () => ({ champion: { cn: {}, en: {} }, patches: {} })
-			},
+
+
+	const props = defineProps({
+		data: {
+			type: Object,
+			default: () => ({ champion: { cn: {}, en: {} }, patches: {} })
 		},
-		setup(props) {
-			const { champion } = toRefs(props.data);
-			const { cn: championsCN } = toRefs(champion.value);
+	});
 
-			const raw = ref('');
-			const conds = computed(() => raw.value.split('\n'));
 
-			const result = computed(() => {
-				if(raw.value.trim() == '') { return ''; }
+	const { champion } = toRefs(props.data);
+	const { cn: championsCN } = toRefs(champion.value);
 
-				const names = new Set();
+	const raw = ref('');
+	const conds = computed(() => raw.value.split('\n'));
 
-				Object.values(championsCN.value).forEach(({ id: cid, skins }) => {
-					Object.values(skins).forEach(skin => {
-						if(typeof skin != 'object') { return; }
+	const result = computed(() => {
+		if(raw.value.trim() == '') { return ''; }
 
-						const { id: sid, name } = skin;
+		const names = new Set();
 
-						for(const cond of conds.value) {
-							if(cond.trim() && name.includes(cond)) {
-								names.add(`${name}^"${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)}.ns",`);
-							}
-						}
-					});
-				});
+		Object.values(championsCN.value).forEach(({ id: cid, skins }) => {
+			Object.values(skins).forEach(skin => {
+				if(typeof skin != 'object') { return; }
 
-				return [...names].join('\n');
+				const { id: sid, name } = skin;
+
+				for(const cond of conds.value) {
+					if(cond.trim() && name.includes(cond)) {
+						names.add(`${name}^"${String(cid).padStart(3, 0)}${String(sid).padStart(3, 0)}.ns",`);
+					}
+				}
 			});
+		});
 
-			return {
-				raw,
-				result,
-			};
-		},
-		methods: {
-			more() { this.$refs.re.focus(); this.$refs.re.select(); },
-			mora() { this.$refs.ra.focus(); this.$refs.ra.select(); },
-		}
-	};
+		return [...names].join('\n');
+	});
+
+	const re = ref(null);
+	const ra = ref(null);
+	const more = () => { re.value.focus(); re.value.select(); };
+	const mora = () => { ra.value.focus(); ra.value.select(); };
 </script>
 
 <style scoped>
