@@ -21,7 +21,7 @@
 			</div>
 		</div>
 		<div ref="Table" class="Table relative overflow-auto" @mouseenter.self="atOver" @touchstart="atTouch" @scroll="atScroll">
-			<table ref="TableItem">
+			<table>
 				<template v-for="(patch, pid) in patchesParsed">
 					<tr v-if="patch.main.length" class="relative">
 						<td v-for="(item, idItem) of patch.main"
