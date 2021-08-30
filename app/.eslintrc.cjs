@@ -2,9 +2,9 @@ const rc = {
 	overrides: [
 		{
 			files: ['*.vue', '*.js'],
-			excludedFiles: ['*.api.js', 'app.js'],
+			excludedFiles: ['*.api.js', '*.lib.js'],
 			env: {
-				es2020: true,
+				es2021: true,
 				browser: true,
 			},
 			extends: [
@@ -49,9 +49,6 @@ const rc = {
 					}
 				}],
 			},
-			globals: {
-				app: true
-			}
 		}
 	],
 };
