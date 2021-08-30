@@ -36,13 +36,13 @@
 						</td>
 					</tr>
 					<tr class="relative">
-						<template v-for="(patchType, type) of patch">
+						<template v-for="(patchType, type, idType) of patch">
 							<template v-if="type != 'main' && patchType.length" class="relative">
 								<td v-for="(item, idItem) of patchType"
 									class="Item relative px-4 py-0 h-14 leading-7 text-sm whitespace-pre text-center overflow-ellipsis filter hover:contrast-125 cursor-pointer"
 									:class="{
 										_split: item.isSplit && idItem != 0,
-										_lineFirst: idItem == 0
+										_lineFirst: idItem == 0 && idType == 0
 									}"
 									:style="{ backgroundColor: item.colors.back, color: item.colors.font }"
 								>
