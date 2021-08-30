@@ -10,7 +10,8 @@
 
 <script setup>
 	import { ref, watch, onBeforeMount, } from 'vue';
-	import A from './lib/Aegis';
+	import A from './lib/Aegis.js';
+
 
 	const data = ref({ champion: { cn: {}, en: {} }, patches: {} });
 	const compNow = ref(null);
@@ -45,13 +46,13 @@
 </script>
 
 <style scoped>
-.TabButton._now {
-	border-color: snow;
-	@apply border-b-2;
-}
+	.TabButton._now {
+		border-color: snow;
+		@apply border-b-2;
+	}
 
-.CompNow {
-	position: relative;
-	height: calc(100% - 2.25rem);
-}
+	.CompNow {
+		position: relative;
+		height: calc(100% - 2.25rem);
+	}
 </style>

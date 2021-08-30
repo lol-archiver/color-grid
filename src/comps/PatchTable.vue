@@ -60,10 +60,8 @@
 </template>
 
 <script setup>
-	/* global defineProps */
-
-	import { computed, toRefs, ref } from 'vue';
-	import parseColor from '../lib/parseColor';
+	import { computed, ref, toRefs } from 'vue';
+	import parseColor from '../lib/parseColor.js';
 
 
 	const props = defineProps({
@@ -187,42 +185,42 @@
 </script>
 
 <style scoped>
-._lineFirst::before {
-	content: "";
-	position: absolute;
-	border-left: 1px solid lightgray;
-	height: 100%;
-	top: 0px;
-	left: 0px;
-}
+	._lineFirst::before {
+		content: "";
+		position: absolute;
+		border-left: 1px solid lightgray;
+		height: 100%;
+		top: 0px;
+		left: 0px;
+	}
 
-.Patcher {
-	float: left;
-	height: calc(100% - 7px - 3.5rem);
-}
+	.Patcher {
+		float: left;
+		height: calc(100% - 7px - 3.5rem);
+	}
 
-.Table {
-	height: calc(100% - 3.5rem);
-	width: auto;
-}
+	.Table {
+		height: calc(100% - 3.5rem);
+		width: auto;
+	}
 
-.Item {
-	min-width: 6rem;
-}
-.Item._split::before {
-	content: "";
-	position: absolute;
-	border-left: 1px solid #3536376b;
-	height: 40%;
-	top: 0px;
-	left: 0px;
-}
+	.Item {
+		min-width: 6rem;
+	}
+	.Item._split::before {
+		content: "";
+		position: absolute;
+		border-left: 1px solid #3536376b;
+		height: 40%;
+		top: 0px;
+		left: 0px;
+	}
 
-._hideBar {
-	scrollbar-width: none;
-}
-._hideBar::-webkit-scrollbar {
-	width: 0px;
-	height: 0px;
-}
+	._hideBar {
+		scrollbar-width: none;
+	}
+	._hideBar::-webkit-scrollbar {
+		width: 0px;
+		height: 0px;
+	}
 </style>

@@ -17,10 +17,8 @@
 </template>
 
 <script setup>
-	/* global defineProps */
-
 	import { computed } from 'vue';
-	import parseColor from '../lib/parseColor';
+	import parseColor from '../lib/parseColor.js';
 
 
 	defineProps({
@@ -72,15 +70,15 @@
 </script>
 
 <style scoped>
-.Item {
-	min-width: 6rem;
-}
-.Item._split::before {
-	content: "";
-	position: absolute;
-	border-left: 1px solid #3536376b;
-	height: 40%;
-	top: 0px;
-	left: 0px;
-}
+	.Item {
+		min-width: 6rem;
+	}
+	.Item._split::before {
+		content: "";
+		position: absolute;
+		border-left: 1px solid #3536376b;
+		height: 40%;
+		top: 0px;
+		left: 0px;
+	}
 </style>

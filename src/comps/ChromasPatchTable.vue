@@ -35,12 +35,12 @@
 </template>
 
 <script setup>
-	/* global defineProps */
-
 	import { computed, ref, toRefs } from 'vue';
 
-	import detectColorWhite from '../lib/ContrastRatio';
-	import parseColor from '../lib/parseColor';
+	import detectColorWhite from '../lib/ContrastRatio.js';
+	import parseColor from '../lib/parseColor.js';
+
+
 
 	const props = defineProps({
 		data: {
@@ -104,6 +104,8 @@
 		'#0C0C0F#272A3F': 'BADDEST',
 		'#FF80B1#9DFFEF': 'Coronation',
 		'#27211C#971458': 'Emberwood',
+		'#162B30#8E0A38': 'Dark Ritual',
+		'#181121#53022D': 'Underground',
 	};
 
 	const chromasAppendAll = {};
@@ -244,18 +246,18 @@
 </script>
 
 <style scoped>
-.Header {
-	float: left;
-	height: calc(100% - 7px);
-}
-.Table {
-	width: auto;
-}
+	.Header {
+		float: left;
+		height: calc(100% - 7px);
+	}
+	.Table {
+		width: auto;
+	}
 
-.Header {
-	scrollbar-width: none;
-}
-.Header::-webkit-scrollbar {
-	width: 0px;
-}
+	.Header {
+		scrollbar-width: none;
+	}
+	.Header::-webkit-scrollbar {
+		width: 0px;
+	}
 </style>

@@ -4,9 +4,9 @@
 		"moduleResolution": "node",
 		"target": "esnext",
 		"experimentalDecorators": true,
+		"strict": true,
 	},
 	"exclude": [
-		"dist",
 		"node_modules",
 	]
 }
