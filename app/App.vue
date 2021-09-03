@@ -11,6 +11,7 @@
 <script setup>
 	import { ref, watch, onBeforeMount, } from 'vue';
 	import A from './lib/Aegis.js';
+	import B from './lib/Bus.js';
 
 
 	const data = ref({ champion: { cn: {}, en: {} }, patches: {} });
@@ -39,7 +40,7 @@
 	});
 
 	watch(compNowPrepare, async now => {
-		await app.loadComp(now);
+		await B.app.loadComp(now);
 
 		compNow.value = now;
 	});

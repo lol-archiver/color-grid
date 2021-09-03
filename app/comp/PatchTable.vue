@@ -60,6 +60,8 @@
 </template>
 
 <script setup>
+	/* global defineProps */
+
 	import { computed, ref, toRefs } from 'vue';
 	import parseColor from '../lib/parseColor.js';
 

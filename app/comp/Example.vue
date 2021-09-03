@@ -17,6 +17,8 @@
 </template>
 
 <script setup>
+	/* global defineProps */
+
 	import { computed } from 'vue';
 	import parseColor from '../lib/parseColor.js';
 

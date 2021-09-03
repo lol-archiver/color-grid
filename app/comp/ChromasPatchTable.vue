@@ -35,6 +35,8 @@
 </template>
 
 <script setup>
+	/* global defineProps */
+
 	import { computed, ref, toRefs } from 'vue';
 
 	import detectColorWhite from '../lib/ContrastRatio.js';

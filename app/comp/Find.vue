@@ -7,6 +7,8 @@
 </template>
 
 <script setup>
+	/* global defineProps */
+
 	import { computed, ref, toRefs } from 'vue';
 
 

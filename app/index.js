@@ -1,14 +1,15 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import './index.css';
+import B from './lib/Bus.js';
 
-window.app = createApp(App);
-app.mount('#app');
+window.app = B.app = createApp(App);
+B.app.mount('#app');
 
-app.loadComp = async slot => {
-	if(!app.component(slot)) {
+B.app.loadComp = async slot => {
+	if(!B.app.component(slot)) {
 		const comp = await import(`./comp/${slot.replace(/-/g, '/')}.vue`);
 
-		app.component(slot, comp.default);
+		B.app.component(slot, comp.default);
 	}
 };
